@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="12dp"
+    android:layout_marginBottom="8dp"
+    android:elevation="4dp">
+
+    <TextView
+        android:id="@+id/txtBillNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bill No: 1023"
+        android:textStyle="bold"
+        android:textColor="#B8962E"
+        android:textSize="16sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="4dp"/>
+
+
+    <TextView
+        android:id="@+id/txtDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"/>
+
+    <TextView
+        android:id="@+id/txtCustomer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Customer Name"/>
+
+    <TextView
+        android:id="@+id/txtMobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mobile"/>
+
+    <TextView
+        android:id="@+id/txtTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: ₹"/>
+
+    <TextView
+        android:id="@+id/txtDeposit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deposit: ₹"
+        android:textColor="#198754"/>
+
+    <TextView
+        android:id="@+id/txtPending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pending: ₹"
+        android:textColor="#dc3545"
+        android:textStyle="bold"/>
+
+</LinearLayout>
