@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Download Bill clicked!", Toast.LENGTH_SHORT).show();
 
                 // 👉 Activity open karne ka MAIN code
-                Intent intent = new Intent(MainActivity.this, downloadBillActivity.class);
+                Intent intent = new Intent(MainActivity.this, DownloadBillActivity.class);
                 startActivity(intent);
             }
         });

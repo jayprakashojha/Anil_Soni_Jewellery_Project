@@ -5,8 +5,40 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".downloadBillActivity">
+    tools:context=".DownloadBillActivity">
 
+    <!-- Heading -->
+    <TextView
+        android:id="@+id/tvHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Download Bill"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="40dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Bill Number Input -->
+    <EditText
+        android:id="@+id/txtInputBill"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter Bill Number"
+        android:inputType="number"
+        android:maxLength="4"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+
+        app:layout_constraintTop_toBottomOf="@id/tvHeading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Download Button -->
     <Button
         android:id="@+id/btnDownloadPdf"
         android:layout_width="0dp"
@@ -16,7 +48,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
 
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtInputBill"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

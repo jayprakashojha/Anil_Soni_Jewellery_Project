@@ -24,7 +24,7 @@ public class customer_pending_amount extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
         // ✅ SQLite se data
-        List<Bill> billList = dbHelper.getAllBills();
+        List<Bean> billList = dbHelper.getAllBills();
 
         PendingBillAdapter adapter =
                 new PendingBillAdapter(this, billList);

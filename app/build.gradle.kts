@@ -37,7 +37,12 @@ android {
 }
 
 dependencies {
+
+
+
+
     implementation(libs.appcompat)
+    implementation(libs.itextpdf)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)

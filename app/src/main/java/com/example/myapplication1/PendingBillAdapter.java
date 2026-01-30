@@ -17,9 +17,9 @@ public class PendingBillAdapter
         extends RecyclerView.Adapter<PendingBillAdapter.ViewHolder> {
 
     Context context;
-    List<Bill> list;
+    List<Bean> list;
 
-    public PendingBillAdapter(Context context, List<Bill> list) {
+    public PendingBillAdapter(Context context, List<Bean> list) {
         this.context = context;
         this.list = list;
     }
@@ -38,16 +38,17 @@ public class PendingBillAdapter
     public void onBindViewHolder(
             @NonNull ViewHolder h, int position) {
 
-        Bill b = list.get(position);
+        Bean b = list.get(position);
 
         // ===== OLD CODE (NO CHANGE) =====
         h.txtBillNo.setText("Bill No: " + b.billNo);
         h.txtDescription.setText("Description: " + b.description);
         h.txtCustomer.setText("Customer: " + b.customerName);
         h.txtMobile.setText("Mobile: " + b.mobile);
-        h.txtTotal.setText("Total: ₹ " + b.finalAmount);
-        h.txtDeposit.setText("Deposit: ₹ " + b.firstPayment);
-        h.txtPending.setText("Pending: ₹ " + b.totalDeposit);
+       h.txtTotal.setText("Total: ₹ " + b.finalAmount);
+      //  h.txtDeposit.setText("Deposit: ₹ " + b.firstPayment);
+        h.txtDeposit.setText("Deposited Amount: " +b.totalDeposit);
+        h.txtPending.setText("Pending: ₹ " + b.pendingAmount);
         // =================================
 
         // 🔥🔥 CLICKABLE BILL NO (ADDED ONLY) 🔥🔥

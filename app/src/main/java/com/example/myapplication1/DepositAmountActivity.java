@@ -42,10 +42,13 @@ public class DepositAmountActivity extends AppCompatActivity {
         TextView tvBillNo = findViewById(R.id.tvBillNo);
         TextView tvCustomer = findViewById(R.id.tvCustomer);
         TextView tvAmount = findViewById(R.id.tvAmount);
+        TextView tvPending = findViewById(R.id.pendingAmount);
 
         tvBillNo.setText("Bill No: " + bill.billNo);
         tvCustomer.setText("Customer: " + bill.customerName);
         tvAmount.setText("Amount: ₹ " + bill.finalAmount);
+
+        tvPending.setText("Pending Amount: " + bill.pendingAmount);
     }
 
 

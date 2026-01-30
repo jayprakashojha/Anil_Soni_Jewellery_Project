@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "jewellery6.db";
+    private static final String DB_NAME = "jewellery7.db";
     private static final int DB_VERSION = 1;
 
     public static final String TABLE_CUSTOMER = "customers";
@@ -100,9 +100,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_CUSTOMER + " ORDER BY id ASC", null);
     }
 
-    public List<Bill> getAllBills() {
+    public List<Bean> getAllBills() {
 
-        List<Bill> billList = new ArrayList<>();
+        List<Bean> billList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT " +
@@ -121,15 +121,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Bill bill = new Bill(
-                        cursor.getInt(0),      // id
-                        cursor.getInt(1),   // billNo
-                        cursor.getString(2),    //description
-                        cursor.getString(3),   // customer name
-                        cursor.getString(4),   // mobile
-                        cursor.getDouble(5),   // total amount
-                        cursor.getDouble(6),   // deposit
-                        cursor.getDouble(7)    // pending
+                Bean bill = new Bean(
+                        cursor.getInt(0),
+                        cursor.getInt(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                       cursor.getDouble(5),
+                       cursor.getDouble(6),
+                       cursor.getDouble(7)
+                     //   cursor.getDouble(8)*/
+
+
+
                 );
                 billList.add(bill);
             } while (cursor.moveToNext());
@@ -146,22 +150,69 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(
-                "SELECT * FROM " + TABLE_CUSTOMER + " WHERE id = ?",
+                "SELECT * FROM " + TABLE_CUSTOMER + " WHERE " + COL_ID + " = ?",
                 new String[]{String.valueOf(billId)}
         );
 
         Bill bill = null;
 
-        if (c != null && c.moveToFirst()) {
+        if (c.moveToFirst()) {
             bill = new Bill();
             bill.id = c.getInt(c.getColumnIndexOrThrow(COL_ID));
             bill.billNo = c.getInt(c.getColumnIndexOrThrow(COL_BILL_NO));
             bill.customerName = c.getString(c.getColumnIndexOrThrow(COL_NAME));
             bill.finalAmount = c.getDouble(c.getColumnIndexOrThrow(COL_AMOUNT));
-            bill.totalDeposit = c.getDouble(c.getColumnIndexOrThrow(COL_DEPOSIT)); // ya COL_PENDING_AMOUNT
+            bill.totalDeposit = c.getDouble(c.getColumnIndexOrThrow(COL_DEPOSIT));
+
+            // 🔥 Important
+            bill.pendingAmount = bill.finalAmount - bill.totalDeposit;
+        }
+
+        c.close();
+        return bill;
+    }
+
+    public Bill getBillByNumber(String billNo) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Bill bill = null;
+        List<Item> itemList = new ArrayList<>();
+
+        Cursor c = db.rawQuery(
+                "SELECT * FROM " + TABLE_CUSTOMER + " WHERE " + COL_BILL_NO + " = ?",
+                new String[]{ billNo }
+        );
+
+        if (c != null && c.moveToFirst()) {
+
+            bill = new Bill();
+            bill.billNo = Integer.parseInt(billNo);
+            bill.customerName = c.getString(c.getColumnIndexOrThrow(COL_NAME));
+            bill.totalDeposit = c.getDouble(c.getColumnIndexOrThrow(COL_DEPOSIT));
+            bill.pendingAmount = c.getDouble(c.getColumnIndexOrThrow(COL_PENDING_AMOUNT));
+            bill.finalAmount = 0;
+
+            do {
+                Item item = new Item();
+                item.type = c.getString(c.getColumnIndexOrThrow(COL_TYPE));
+                item.particular = c.getString(c.getColumnIndexOrThrow(COL_DESCRIPTION));
+                item.weight = c.getDouble(c.getColumnIndexOrThrow(COL_WEIGHT));
+                item.rate = c.getDouble(c.getColumnIndexOrThrow(COL_RATE));
+                item.value = c.getDouble(c.getColumnIndexOrThrow(COL_VALUE));
+                item.makingPercent = c.getDouble(c.getColumnIndexOrThrow(COL_MAKING));
+                item.amount = c.getDouble(c.getColumnIndexOrThrow(COL_AMOUNT));
+
+                bill.finalAmount += item.amount;
+                itemList.add(item);
+
+            } while (c.moveToNext());
+
+            bill.items = itemList;
         }
 
         if (c != null) c.close();
+        db.close();
+
         return bill;
     }
 

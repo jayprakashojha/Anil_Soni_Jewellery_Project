@@ -6,6 +6,17 @@
     android:padding="16dp"
     android:background="#FFF8E1">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="💎 Deposit Amount 💎"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="#c9a24d"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="20dp"/>
     <!-- Bill No -->
     <TextView
         android:id="@+id/tvBillNo"
@@ -22,7 +33,7 @@
         android:id="@+id/tvCustomer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Customer:"
+        android:text="Customer Name:"
         android:textSize="16sp"
         android:textColor="#000000"
         android:layout_marginBottom="8dp"/>
@@ -37,5 +48,27 @@
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/tvDepositAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deposit Amount:"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/pendingAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pending Amount:"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#D32F2F"
+        android:layout_marginTop="12dp"/>
+
+
 
 </LinearLayout>
