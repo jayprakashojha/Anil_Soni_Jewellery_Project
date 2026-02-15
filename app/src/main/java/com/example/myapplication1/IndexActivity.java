@@ -33,6 +33,8 @@ import java.util.Locale;
 public class IndexActivity extends AppCompatActivity {
 
     TableLayout tableLayout;
+    TextView tvTotalAmount;
+
     Button btnAddRow;
     EditText etCustomerName, etMobile, etDeposit, etDate, etAddress, etDescription;
 
@@ -142,10 +144,31 @@ TextView tvBillNo;
         TextWatcher amountWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                double weight = getDouble(etWeight);
+                double rate = getDouble(etRate);
+                double making = getDouble(etMaking);
+
+                double value = weight * rate;
+                double amount = value + making;
+
                 calculateAmount();
                 calculatePending();
+                updateTotalAmount();
+
+
+
+                // Yahan value set ho rahi hai
+                etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
+                etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
+
+                // IMPORTANT: Jaise hi amount set hua, Grand Total function call karein
+                updateTotalAmount();
+
             }
             @Override public void afterTextChanged(Editable s) {}
+
+
         };
 
         etWeight.addTextChangedListener(amountWatcher);
@@ -166,6 +189,9 @@ TextView tvBillNo;
         btnAddRow = findViewById(R.id.btnAddRow);
 
         btnAddRow.setOnClickListener(v -> addNewRow());
+
+         tvTotalAmount = findViewById(R.id.tvTotalAmount);
+
     }
 
     // ================= CALCULATIONS =================
@@ -250,6 +276,8 @@ TextView tvBillNo;
         deleteBtn.setText("X");
         deleteBtn.setOnClickListener(v -> tableLayout.removeView(row));
         row.addView(deleteBtn);
+        updateTotalAmount();
+
 
         // ================= TEXTWATCHER FOR CALCULATION =================
         TextWatcher watcher = new TextWatcher() {
@@ -264,6 +292,8 @@ TextView tvBillNo;
 
                 etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
                 etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
+
+
             }
             @Override public void afterTextChanged(Editable s) {}
         };
@@ -293,13 +323,31 @@ TextView tvBillNo;
 
         etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
         etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
+
     }
 
     private void calculatePending() {
-        double amount = getDouble(etAmount);
+        // 1. Grand Total nikaalein (tvTotalAmount se text lekar use double mein convert karein)
+        double totalAmount = 0;
+        try {
+            // Hum text se sirf number nikaalne ke liye replaces use kar rahe hain
+            String totalText = tvTotalAmount.getText().toString().replace("Total Amount is: ", "").trim();
+            totalAmount = totalText.isEmpty() ? 0 : Double.parseDouble(totalText);
+        } catch (Exception e) {
+            totalAmount = 0;
+        }
+
         double deposit = getDouble(etDeposit);
 
-        double pending = amount - deposit;
+        double pending = totalAmount - deposit;
+
+
+        if (pending > 0) {
+            etPendingDeposit.setTextColor(android.graphics.Color.RED);
+        } else {
+            etPendingDeposit.setTextColor(android.graphics.Color.parseColor("#006400")); // Dark Green
+        }
+
         etPendingDeposit.setText(String.format(Locale.getDefault(), "%.2f", pending));
     }
 
@@ -424,5 +472,34 @@ TextView tvBillNo;
             Toast.makeText(this, "❌ Failed to Save", Toast.LENGTH_SHORT).show();
             clearAllFields();
         }
+
+
+    }
+
+    private void updateTotalAmount() {
+        // Sirf top wale amount se shuru karein
+        double total = getDouble(etAmount);
+
+        int rowCount = tableLayout.getChildCount();
+        for (int i = 0; i < rowCount; i++) {
+            View rowView = tableLayout.getChildAt(i);
+            if (rowView instanceof TableRow) {
+                TableRow row = (TableRow) rowView;
+
+
+                if (row.getChildCount() >= 6) {
+                    View v = row.getChildAt(5);
+                    if (v instanceof EditText) {
+
+                        if (v != etAmount) {
+                            total += getDouble((EditText) v);
+                        }
+                    }
+                }
+            }
+        }
+        tvTotalAmount.setGravity(Gravity.START); // Left side alignment
+        tvTotalAmount.setTextColor(android.graphics.Color.parseColor("#006400")); // Dark Green
+        tvTotalAmount.setText(String.format(Locale.getDefault(), "Total Amount is: %.2f", total));
     }
 }
