@@ -32,8 +32,8 @@ import java.util.Locale;
 
 public class IndexActivity extends AppCompatActivity {
 
+    double grandTotal = 0;
     TableLayout tableLayout;
-
     TextView tvTotalAmount;
 
     Button btnAddRow;
@@ -145,25 +145,8 @@ TextView tvBillNo;
         TextWatcher amountWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                double weight = getDouble(etWeight);
-                double rate = getDouble(etRate);
-                double making = getDouble(etMaking);
-
-                double value = weight * rate;
-                double amount = value + making;
-
                 calculateAmount();
                 calculatePending();
-                updateTotalAmount();
-
-
-
-                // Yahan value set ho rahi hai
-                etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
-                etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
-
-                // IMPORTANT: Jaise hi amount set hua, Grand Total function call karein
                 updateTotalAmount();
 
             }
@@ -328,27 +311,10 @@ TextView tvBillNo;
     }
 
     private void calculatePending() {
-        // 1. Grand Total nikaalein (tvTotalAmount se text lekar use double mein convert karein)
-        double totalAmount = 0;
-        try {
-            // Hum text se sirf number nikaalne ke liye replaces use kar rahe hain
-            String totalText = tvTotalAmount.getText().toString().replace("Total Amount is: ", "").trim();
-            totalAmount = totalText.isEmpty() ? 0 : Double.parseDouble(totalText);
-        } catch (Exception e) {
-            totalAmount = 0;
-        }
-
+        double amount = grandTotal;
         double deposit = getDouble(etDeposit);
 
-        double pending = totalAmount - deposit;
-
-
-        if (pending > 0) {
-            etPendingDeposit.setTextColor(android.graphics.Color.RED);
-        } else {
-            etPendingDeposit.setTextColor(android.graphics.Color.parseColor("#006400")); // Dark Green
-        }
-
+        double pending = amount - deposit;
         etPendingDeposit.setText(String.format(Locale.getDefault(), "%.2f", pending));
     }
 
@@ -445,12 +411,11 @@ TextView tvBillNo;
 
 
         boolean inserted = dbHelper.insertCustomer(
-                name
-                , mobile, date, address, description,type, weight,
-                rate,value, making,amount,deposit,pendingAmount,billNo);
+                name, mobile, date, address, description,type, weight,
+                rate,value, making,grandTotal,deposit,pendingAmount,billNo);
 
         Toast.makeText(this,
-                "Pending UI = " + tvBillNo.getText().toString(),
+                "Bill Number  = " + tvBillNo.getText().toString(),
                 Toast.LENGTH_SHORT).show();
 
         if (inserted) {
@@ -479,29 +444,25 @@ TextView tvBillNo;
     }
 
     private void updateTotalAmount() {
+        double total = 0;
 
-        double total = getDouble(etAmount);
-
+        System.out.println("Hello Vanshu");
         int rowCount = tableLayout.getChildCount();
+
         for (int i = 0; i < rowCount; i++) {
             View rowView = tableLayout.getChildAt(i);
             if (rowView instanceof TableRow) {
                 TableRow row = (TableRow) rowView;
 
 
-                if (row.getChildCount() >= 6) {
-                    View v = row.getChildAt(5);
-                    if (v instanceof EditText) {
-
-                        if (v != etAmount) {
-                            total += getDouble((EditText) v);
-                        }
-                    }
+                View amountView = row.getChildAt(5);
+                if (amountView instanceof EditText) {
+                    total += getDouble((EditText) amountView);
+                     grandTotal = total;
                 }
             }
         }
-        tvTotalAmount.setGravity(Gravity.START); // Left side alignment
-        tvTotalAmount.setTextColor(android.graphics.Color.parseColor("#006400")); // Dark Green
-        tvTotalAmount.setText(String.format(Locale.getDefault(), "Total Amount is: %.2f", total));
+        tvTotalAmount.setText(String.format(Locale.getDefault(), "Grand Total Amount: %.2f", grandTotal));
     }
+
 }

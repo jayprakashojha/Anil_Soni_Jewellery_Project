@@ -11,8 +11,8 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "jewellery7.db";
-    private static final int DB_VERSION = 1;
+    private static final String DB_NAME = "jewellery11.db";
+    private static final int DB_VERSION = 2;
 
     public static final String TABLE_CUSTOMER = "customers";
     public static final String COL_ID = "id";
@@ -28,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_VALUE = "value";
     public static final String COL_MAKING = "making";
     public static final String COL_AMOUNT = "amount";
+    public static final String COL_GRAND_TOTAL = "grand_total";
     public static final String COL_PENDING_AMOUNT = "pendingAmount";
 
     public static final String COL_BILL_NO = "billNo";
@@ -51,9 +52,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_RATE + " REAL, " +
                 COL_VALUE + " REAL, " +
                 COL_MAKING + " REAL, " +
-                COL_AMOUNT + " REAL, " +
+
+                COL_GRAND_TOTAL + " REAL, " +
                 COL_DEPOSIT + " REAL, " +
                 COL_PENDING_AMOUNT + " REAL," +
+               // COL_AMOUNT + " REAL, " +
                 COL_BILL_NO + " INTEGER)";
 
 
@@ -72,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                   double rate,
                                   double value,
                                   double making,
-                                  double amount, double deposit, double pendingAmount, String billNo) {
+                                  double grandTotal, double deposit, double pendingAmount, String billNo) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
@@ -86,9 +89,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(COL_RATE, rate);
         cv.put(COL_VALUE, value);
         cv.put(COL_MAKING, making);
-        cv.put(COL_AMOUNT, amount);
+
+        cv.put(COL_GRAND_TOTAL,grandTotal);
         cv.put(COL_DEPOSIT, deposit);
         cv.put(COL_PENDING_AMOUNT, pendingAmount);
+        //cv.put(COL_AMOUNT, amount);
         cv.put(COL_BILL_NO, billNo);
 
         long result = db.insert(TABLE_CUSTOMER, null, cv);
