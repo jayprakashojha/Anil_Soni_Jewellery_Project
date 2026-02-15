@@ -144,7 +144,7 @@ public class DownloadBillActivity extends AppCompatActivity {
             table.addCell("Weight");
             table.addCell("Rate");
             table.addCell("Value");
-            table.addCell("Making %");
+            table.addCell("Making");
             table.addCell("Amount");
 
             for (Item item : bill.items) {

@@ -4,13 +4,18 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +32,8 @@ import java.util.Locale;
 
 public class IndexActivity extends AppCompatActivity {
 
-    // Customer fields
+    TableLayout tableLayout;
+    Button btnAddRow;
     EditText etCustomerName, etMobile, etDeposit, etDate, etAddress, etDescription;
 
     // Calculation fields
@@ -88,6 +94,10 @@ TextView tvBillNo;
             dialog.show();
         });
 
+        //====dynamic button ke liye====
+
+
+
         // ===== Spinner =====
          spinnerMetal = findViewById(R.id.spinnerMetal);
         String[] items = {"Select", "Gold", "Silver"};
@@ -99,6 +109,18 @@ TextView tvBillNo;
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMetal.setAdapter(adapter);
+
+        Spinner spinner = new Spinner(this);
+        String[] metals  = {"Select","Gold","Silver"};
+        ArrayAdapter<String>  adapter2 =new ArrayAdapter<String>(
+                this,  android.R.layout.simple_spinner_item,
+                metals
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+
+
 
         spinnerMetal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -139,9 +161,127 @@ TextView tvBillNo;
         btnViewPending.setOnClickListener(v ->
                 startActivity(new Intent(IndexActivity.this, PendingAmountActivity.class))
         );
+
+        tableLayout = findViewById(R.id.tableJewellery);
+        btnAddRow = findViewById(R.id.btnAddRow);
+
+        btnAddRow.setOnClickListener(v -> addNewRow());
     }
 
     // ================= CALCULATIONS =================
+
+    private void addNewRow() {
+        TableRow row = new TableRow(this);
+        row.setLayoutParams(new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.MATCH_PARENT,
+                TableLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        // ================= TYPE (Spinner) =================
+        Spinner spinnerType = new Spinner(this);
+        String[] metals = {"Select", "Gold", "Silver"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                metals
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(adapter);
+
+        TableRow.LayoutParams spinnerParams = new TableRow.LayoutParams(dpToPx(120), dpToPx(120));
+        spinnerType.setLayoutParams(spinnerParams);
+        row.addView(spinnerType);
+
+        // ================= WEIGHT =================
+        LinearLayout weightLayout = new LinearLayout(this);
+        weightLayout.setOrientation(LinearLayout.HORIZONTAL);
+        weightLayout.setGravity(Gravity.CENTER_VERTICAL);
+        weightLayout.setBackgroundResource(R.drawable.cell_border);
+        weightLayout.setLayoutParams(new TableRow.LayoutParams(dpToPx(100), dpToPx(120)));
+
+        EditText etWeight = new EditText(this);
+        LinearLayout.LayoutParams etParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.MATCH_PARENT, 1f
+        );
+        etWeight.setLayoutParams(etParams);
+        etWeight.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        etWeight.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+        etWeight.setBackground(null);
+
+        TextView gm = new TextView(this);
+        gm.setText("gm");
+        gm.setGravity(Gravity.CENTER_VERTICAL);
+        gm.setPadding(dpToPx(4), 0, dpToPx(4), 0);
+
+        weightLayout.addView(etWeight);
+        weightLayout.addView(gm);
+        row.addView(weightLayout);
+
+        // ================= RATE =================
+        EditText etRate = new EditText(this);
+        etRate.setLayoutParams(new TableRow.LayoutParams(dpToPx(80), dpToPx(120)));
+        etRate.setBackgroundResource(R.drawable.cell_border);
+        etRate.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        row.addView(etRate);
+
+        // ================= VALUE =================
+        EditText etValue = new EditText(this);
+        etValue.setLayoutParams(new TableRow.LayoutParams(dpToPx(90), dpToPx(120)));
+        etValue.setBackgroundResource(R.drawable.cell_border);
+        etValue.setEnabled(false);
+        row.addView(etValue);
+
+        // ================= MAKING =================
+        EditText etMaking = new EditText(this);
+        etMaking.setLayoutParams(new TableRow.LayoutParams(dpToPx(90), dpToPx(120)));
+        etMaking.setBackgroundResource(R.drawable.cell_border);
+        etMaking.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        row.addView(etMaking);
+
+        // ================= AMOUNT =================
+        EditText etAmount = new EditText(this);
+        etAmount.setLayoutParams(new TableRow.LayoutParams(dpToPx(90), dpToPx(120)));
+        etAmount.setBackgroundResource(R.drawable.cell_border);
+        etAmount.setEnabled(false);
+        row.addView(etAmount);
+
+        // ================= DELETE BUTTON =================
+        Button deleteBtn = new Button(this);
+        deleteBtn.setText("X");
+        deleteBtn.setOnClickListener(v -> tableLayout.removeView(row));
+        row.addView(deleteBtn);
+
+        // ================= TEXTWATCHER FOR CALCULATION =================
+        TextWatcher watcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double weight = getDouble(etWeight);
+                double rate = getDouble(etRate);
+                double making = getDouble(etMaking);
+
+                double value = weight * rate;
+                double amount = value + making;
+
+                etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
+                etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        };
+
+        etWeight.addTextChangedListener(watcher);
+        etRate.addTextChangedListener(watcher);
+        etMaking.addTextChangedListener(watcher);
+
+        // ================= ADD ROW TO TABLE =================
+        tableLayout.addView(row);
+    }
+
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
+    }
+
+
+
 
     private void calculateAmount() {
         double weight = getDouble(etWeight);
