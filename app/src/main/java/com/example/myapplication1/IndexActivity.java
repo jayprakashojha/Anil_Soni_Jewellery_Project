@@ -33,6 +33,7 @@ import java.util.Locale;
 public class IndexActivity extends AppCompatActivity {
 
     TableLayout tableLayout;
+
     TextView tvTotalAmount;
 
     Button btnAddRow;
@@ -444,7 +445,8 @@ TextView tvBillNo;
 
 
         boolean inserted = dbHelper.insertCustomer(
-                name, mobile, date, address, description,type, weight,
+                name
+                , mobile, date, address, description,type, weight,
                 rate,value, making,amount,deposit,pendingAmount,billNo);
 
         Toast.makeText(this,
@@ -477,7 +479,7 @@ TextView tvBillNo;
     }
 
     private void updateTotalAmount() {
-        // Sirf top wale amount se shuru karein
+
         double total = getDouble(etAmount);
 
         int rowCount = tableLayout.getChildCount();
