@@ -46,9 +46,13 @@ TextView tvBillNo;
     DatabaseHelper dbHelper;
     String billNo;
     Spinner spinnerMetal;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_index);
@@ -258,9 +262,11 @@ TextView tvBillNo;
         // ================= DELETE BUTTON =================
         Button deleteBtn = new Button(this);
         deleteBtn.setText("X");
-        deleteBtn.setOnClickListener(v -> tableLayout.removeView(row));
-        row.addView(deleteBtn);
-        updateTotalAmount();
+        deleteBtn.setOnClickListener(v -> {
+            tableLayout.removeView(row);
+            updateTotalAmount();
+            calculatePending();
+        });
 
 
         // ================= TEXTWATCHER FOR CALCULATION =================
@@ -276,7 +282,8 @@ TextView tvBillNo;
 
                 etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
                 etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
-
+                updateTotalAmount();
+                calculatePending();
 
             }
             @Override public void afterTextChanged(Editable s) {}
@@ -355,6 +362,7 @@ TextView tvBillNo;
 
 
     private void saveCustomer() {
+
 
          billNo = tvBillNo.getText().toString().trim();
         String name = etCustomerName.getText().toString().trim();
