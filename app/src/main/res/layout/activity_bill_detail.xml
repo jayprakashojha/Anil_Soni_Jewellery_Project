@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f6f2e9"
     tools:context=".BillDetailActivity">
 
     <LinearLayout
@@ -14,9 +15,22 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/txtHeading"
+            android:text="Jewellery Detail"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"/>
+
+        <TextView
             android:id="@+id/txtNameDetail"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="#388E3C"
+            android:paddingTop="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -28,7 +42,16 @@
         <TextView
             android:id="@+id/txtTotalDetail"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="#388E3C"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView android:id="@+id/textPendingAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#D32F2F"
+            android:textSize="16sp" android:textStyle="bold" android:paddingTop="4dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewItems"

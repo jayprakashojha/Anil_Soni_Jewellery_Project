@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class BillDetailActivity extends AppCompatActivity {
 
-    TextView txtName, txtBillNo, txtTotal;
+    TextView txtName, txtBillNo, txtTotal,textPending;
     RecyclerView recyclerView;
 
     DatabaseHelper db;
@@ -23,6 +23,8 @@ public class BillDetailActivity extends AppCompatActivity {
         txtName = findViewById(R.id.txtNameDetail);
         txtBillNo = findViewById(R.id.txtBillNoDetail);
         txtTotal = findViewById(R.id.txtTotalDetail);
+        textPending = findViewById(R.id.textPendingAmount);
+
         recyclerView = findViewById(R.id.recyclerViewItems);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -42,6 +44,7 @@ public class BillDetailActivity extends AppCompatActivity {
                 txtName.setText(customer.getCustomerName());
                 txtBillNo.setText("Bill No: " + customer.getBillNo());
                 txtTotal.setText("Total: " + customer.getGrandTotal());
+                textPending.setText("Pending Amount: " + customer.getPendingAmount());
 
                 BillItemAdapter adapter =
                         new BillItemAdapter(this, fullBill.getItems());

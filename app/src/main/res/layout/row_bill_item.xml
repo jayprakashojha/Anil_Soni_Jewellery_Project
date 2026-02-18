@@ -4,50 +4,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
-        android:padding="12dp"
+        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FAFAFA"
         tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/txtType"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="18sp"
+            android:textColor="#4A148C"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="Type: Gold Ring"/>
 
         <TextView
             android:id="@+id/txtWeight"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="#1E88E5"
+            android:textSize="16sp"
+            android:text="Weight: 10g"/>
 
         <TextView
             android:id="@+id/txtRate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="#00897B"
+            android:textSize="16sp"
+            android:text="Rate: ₹6000"/>
 
         <TextView
             android:id="@+id/txtValue"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="#F9A825"
+            android:textSize="16sp"
+            android:text="Value: ₹60000"/>
 
         <TextView
             android:id="@+id/txtMaking"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="#D84315"
+            android:textSize="16sp"
+            android:text="Making: ₹5000"/>
 
         <TextView
             android:id="@+id/txtAmount"
-            android:textStyle="bold"
-            android:textSize="15sp"
+            android:textStyle="bold|italic"
+            android:textSize="17sp"
+            android:textColor="#0D47A1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="Total Amount: ₹65000"
+            android:paddingTop="4dp"/>
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
