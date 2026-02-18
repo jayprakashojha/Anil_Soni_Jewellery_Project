@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.BreakIterator;
 import java.util.List;
 
 public class BillItemAdapter extends RecyclerView.Adapter<BillItemAdapter.ViewHolder> {
@@ -38,7 +39,11 @@ public class BillItemAdapter extends RecyclerView.Adapter<BillItemAdapter.ViewHo
 
         holder.txtType.setText("Type: " + item.getType());
         holder.txtWeight.setText("Weight: " + item.getWeight());
-        holder.txtAmount.setText("Amount: ₹" + item.getAmount());
+        holder.txtRate.setText("Rate: ₹" + item.getRate());
+        holder.txtValue.setText("Value: ₹" + item.getValue());
+        holder.txtMaking.setText("Making: ₹" + item.getMaking());
+        holder.txtAmount.setText("Total Amount: ₹" + item.getAmount());
+
     }
 
     @Override
@@ -48,13 +53,16 @@ public class BillItemAdapter extends RecyclerView.Adapter<BillItemAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtType, txtWeight, txtAmount;
+        TextView txtType, txtWeight, txtRate, txtValue, txtMaking, txtAmount;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtType = itemView.findViewById(R.id.txtType);
             txtWeight = itemView.findViewById(R.id.txtWeight);
+            txtRate = itemView.findViewById(R.id.txtRate);
+            txtValue = itemView.findViewById(R.id.txtValue);
+            txtMaking = itemView.findViewById(R.id.txtMaking);
             txtAmount = itemView.findViewById(R.id.txtAmount);
         }
     }
