@@ -11,8 +11,8 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "jewellery15.db";
-    private static final int DB_VERSION = 4;
+    private static final String DB_NAME = "jewellery20.db";
+    private static final int DB_VERSION = 6;
 
     public static final String TABLE_CUSTOMER = "customers";
     public static final String COL_ID = "id";
@@ -268,7 +268,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM " + TABLE_CUSTOMER + " ORDER BY id DESC",
+                "SELECT * FROM " + TABLE_CUSTOMER + " ORDER BY id asc",
                 null
         );
 

@@ -33,19 +33,20 @@ import java.util.Locale;
 public class IndexActivity extends AppCompatActivity {
 
     double grandTotal = 0;
+
     TableLayout tableLayout;
     TextView tvTotalAmount;
 
     Button btnAddRow;
-    EditText etCustomerName, etMobile, etDeposit, etDate, etAddress, etDescription;
+    EditText etCustomerName, etMobile, etDeposit, etDate, etAddress, etDescription,etPendingDeposit;
 
     // Calculation fields
-    EditText etWeight, etRate, etValue, etMaking, etAmount, etPendingDeposit;
-TextView tvBillNo;
+
+    TextView tvBillNo;
     Button btnSaveCustomer;
     DatabaseHelper dbHelper;
     int billNo;
-    Spinner spinnerMetal;
+
 
 
     @Override
@@ -71,11 +72,7 @@ TextView tvBillNo;
         etDescription = findViewById(R.id.etDescription);
         etDeposit = findViewById(R.id.etDeposit);
 
-        etWeight = findViewById(R.id.etWeight);
-        etRate = findViewById(R.id.etRate);
-        etValue = findViewById(R.id.etValue);
-        etMaking = findViewById(R.id.etMaking);
-        etAmount = findViewById(R.id.etAmount);
+
         etPendingDeposit = findViewById(R.id.etPendingDeposit);
         tvBillNo = findViewById(R.id.tvBillNo);
         btnSaveCustomer = findViewById(R.id.btnSaveCustomer);
@@ -106,16 +103,6 @@ TextView tvBillNo;
 
 
         // ===== Spinner =====
-         spinnerMetal = findViewById(R.id.spinnerMetal);
-        String[] items = {"Select", "Gold", "Silver"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                items
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMetal.setAdapter(adapter);
 
         Spinner spinner = new Spinner(this);
         String[] metals  = {"Select","Gold","Silver"};
@@ -123,33 +110,16 @@ TextView tvBillNo;
                 this,  android.R.layout.simple_spinner_item,
                 metals
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
 
 
 
-        spinnerMetal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                String selected = parent.getItemAtPosition(position).toString();
-
-                if (!selected.equals("Select")) {
-                    Toast.makeText(IndexActivity.this,
-                            "Selected: " + selected,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
 
         // ===== TextWatcher for Amount Calculation =====
         TextWatcher amountWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculateAmount();
+
                 calculatePending();
                 updateTotalAmount();
 
@@ -157,11 +127,10 @@ TextView tvBillNo;
             @Override public void afterTextChanged(Editable s) {}
 
 
+
+
         };
 
-        etWeight.addTextChangedListener(amountWatcher);
-        etRate.addTextChangedListener(amountWatcher);
-        etMaking.addTextChangedListener(amountWatcher);
         etDeposit.addTextChangedListener(amountWatcher);
 
         // ===== Save Customer =====
@@ -178,7 +147,7 @@ TextView tvBillNo;
 
         btnAddRow.setOnClickListener(v -> addNewRow());
 
-         tvTotalAmount = findViewById(R.id.tvTotalAmount);
+        tvTotalAmount = findViewById(R.id.tvTotalAmount);
 
     }
 
@@ -280,7 +249,7 @@ TextView tvBillNo;
 
                 etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
                 etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
-
+                updateTotalAmount();
 
             }
             @Override public void afterTextChanged(Editable s) {}
@@ -301,18 +270,6 @@ TextView tvBillNo;
 
 
 
-    private void calculateAmount() {
-        double weight = getDouble(etWeight);
-        double rate = getDouble(etRate);
-        double making = getDouble(etMaking);
-
-        double value = weight * rate;
-        double amount = value + making;
-
-        etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
-        etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
-
-    }
 
     private void calculatePending() {
         double amount = grandTotal;
@@ -342,11 +299,6 @@ TextView tvBillNo;
         etDeposit.setText("");
 
         // Calculation fields
-        etWeight.setText("");
-        etRate.setText("");
-        etValue.setText("");
-        etMaking.setText("");
-        etAmount.setText("");
         etPendingDeposit.setText("");
 
         // Date ko aaj ki date pe reset
@@ -361,38 +313,13 @@ TextView tvBillNo;
     private void saveCustomer() {
 
 
-       //  billNo = tvBillNo.getText().toString().trim();
+
         String name = etCustomerName.getText().toString().trim();
         String mobile = etMobile.getText().toString().trim();
         String date = etDate.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
         String description = etDescription.getText().toString().trim();
 
-        String type = spinnerMetal.getSelectedItem().toString();
-
-        if (type.equals("Select")) {
-            Toast.makeText(this, "Please select Metal type", Toast.LENGTH_SHORT).show();
-            return;
-        }
-       // String type = spinnerMetal.getSelectedItem().toString();
-
-
-        double weight = etWeight.getText().toString().trim().isEmpty()
-                ? 0
-                : Double.parseDouble(etWeight.getText().toString().trim());
-        double rate = etRate.getText().toString().trim().isEmpty()
-                ? 0
-                : Double.parseDouble(etRate.getText().toString().trim());
-        double value = etValue.getText().toString().trim().isEmpty()
-                ? 0
-                : Double.parseDouble(etValue.getText().toString().trim());
-        double making = etMaking.getText().toString().trim().isEmpty()
-                ? 0
-                : Double.parseDouble(etMaking.getText().toString().trim());
-
-        double amount = etAmount.getText().toString().trim().isEmpty()
-                ? 0
-                : Double.parseDouble(etAmount.getText().toString().trim());
 
 
         double deposit = getDouble(etDeposit);
@@ -438,14 +365,6 @@ TextView tvBillNo;
             etMobile.setText("");
             etAddress.setText("");
             etDescription.setText("");
-           // etDeposit.setText("");
-           // etPendingDeposit.setText("");
-          //  spinnerMetal.setSelection(0);
-            //etWeight.setText("");
-            //etRate.setText("");
-           // etValue.setText("");
-            //etMaking.setText("");
-            //etAmount.setText("");
             etDeposit.setText("");
             etPendingDeposit.setText("");
 
@@ -530,7 +449,7 @@ TextView tvBillNo;
                 View amountView = row.getChildAt(5);
                 if (amountView instanceof EditText) {
                     total += getDouble((EditText) amountView);
-                     grandTotal = total;
+                    grandTotal = total;
                 }
             }
         }
