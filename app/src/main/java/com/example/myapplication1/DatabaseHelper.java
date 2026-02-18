@@ -11,8 +11,8 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "jewellery11.db";
-    private static final int DB_VERSION = 2;
+    private static final String DB_NAME = "jewellery15.db";
+    private static final int DB_VERSION = 4;
 
     public static final String TABLE_CUSTOMER = "customers";
     public static final String COL_ID = "id";
@@ -57,10 +57,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_DEPOSIT + " REAL, " +
                 COL_PENDING_AMOUNT + " REAL," +
                // COL_AMOUNT + " REAL, " +
-                COL_BILL_NO + " INTEGER)";
+                COL_BILL_NO + "  TEXT UNIQUE)";
+               // COL_BILL_NO + " INTEGER)";
 
 
         db.execSQL(createTable);
+
+        String createItemsTable = "CREATE TABLE bill_items (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "customer_id INTEGER, " +
+                "type TEXT, " +
+                "weight REAL, " +
+                "rate REAL, " +
+                "value REAL, " +
+                "making REAL, " +
+                "amount REAL, " +
+                "FOREIGN KEY(customer_id) REFERENCES " + TABLE_CUSTOMER +
+                "(" + COL_ID + ") ON DELETE CASCADE" +
+                ")";
+
+        db.execSQL(createItemsTable);
+
+    }
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
     }
 
     @Override
@@ -70,35 +92,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertCustomer(String name, String mobile, String date, String address, String description, String type,
-                                  double weight,
-                                  double rate,
-                                  double value,
-                                  double making,
-                                  double grandTotal, double deposit, double pendingAmount, String billNo) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public long insertCustomer(String name, String mobile, String date,
+                               String address, String description,
+                               double grandTotal,
+                               double deposit,
+                               double pendingAmount,
+                               String billNo) {
 
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+
         cv.put(COL_NAME, name);
         cv.put(COL_MOBILE, mobile);
         cv.put(COL_DATE, date);
         cv.put(COL_ADDRESS, address);
         cv.put(COL_DESCRIPTION, description);
-        cv.put(COL_TYPE, type);
-        cv.put(COL_WEIGHT, weight);
-        cv.put(COL_RATE, rate);
-        cv.put(COL_VALUE, value);
-        cv.put(COL_MAKING, making);
-
-        cv.put(COL_GRAND_TOTAL,grandTotal);
+        cv.put(COL_GRAND_TOTAL, grandTotal);
         cv.put(COL_DEPOSIT, deposit);
         cv.put(COL_PENDING_AMOUNT, pendingAmount);
-        //cv.put(COL_AMOUNT, amount);
         cv.put(COL_BILL_NO, billNo);
 
-        long result = db.insert(TABLE_CUSTOMER, null, cv);
+        return db.insert(TABLE_CUSTOMER, null, cv);
+    }
+
+
+    public boolean insertBillItem(long customerId,
+                                  String type,
+                                  double weight,
+                                  double rate,
+                                  double value,
+                                  double making,
+                                  double amount) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("customer_id", customerId);
+        cv.put("type", type);
+        cv.put("weight", weight);
+        cv.put("rate", rate);
+        cv.put("value", value);
+        cv.put("making", making);
+        cv.put("amount", amount);
+
+        long result = db.insert("bill_items", null, cv);
+
         return result != -1;
     }
+
 
     public Cursor getAllCustomers() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -219,6 +260,109 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return bill;
+    }
+
+    public List<CustomerBean> getAllCustomersList() {
+
+        List<CustomerBean> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM " + TABLE_CUSTOMER + " ORDER BY id DESC",
+                null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                CustomerBean customer = new CustomerBean(
+                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_BILL_NO)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_DESCRIPTION)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_MOBILE)),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_GRAND_TOTAL)),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DEPOSIT)),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_PENDING_AMOUNT))
+                );
+
+                list.add(customer);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
+    public List<BillItemBean> getItemsByCustomerId(long customerId) {
+
+        List<BillItemBean> itemList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM bill_items WHERE customer_id = ?",
+                new String[]{String.valueOf(customerId)}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                BillItemBean item = new BillItemBean(
+                        cursor.getLong(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getLong(cursor.getColumnIndexOrThrow("customer_id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("type")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("weight")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("rate")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("value")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("making")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("amount"))
+                );
+
+                itemList.add(item);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return itemList;
+    }
+    public FullBill getFullBillByCustomerId(long customerId) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // ---- 1️⃣ Get Customer ----
+        Cursor c = db.rawQuery(
+                "SELECT * FROM " + TABLE_CUSTOMER + " WHERE id = ?",
+                new String[]{String.valueOf(customerId)}
+        );
+
+        CustomerBean customer = null;
+
+        if (c.moveToFirst()) {
+
+            customer = new CustomerBean(
+                    c.getLong(c.getColumnIndexOrThrow(COL_ID)),
+                    c.getString(c.getColumnIndexOrThrow(COL_BILL_NO)),
+                    c.getString(c.getColumnIndexOrThrow(COL_DESCRIPTION)),
+                    c.getString(c.getColumnIndexOrThrow(COL_NAME)),
+                    c.getString(c.getColumnIndexOrThrow(COL_MOBILE)),
+                    c.getDouble(c.getColumnIndexOrThrow(COL_GRAND_TOTAL)),
+                    c.getDouble(c.getColumnIndexOrThrow(COL_DEPOSIT)),
+                    c.getDouble(c.getColumnIndexOrThrow(COL_PENDING_AMOUNT))
+            );
+        }
+
+        c.close();
+
+        // ---- 2️⃣ Get Items ----
+        List<BillItemBean> items = getItemsByCustomerId(customerId);
+
+        db.close();
+
+        return new FullBill(customer, items);
     }
 
 }

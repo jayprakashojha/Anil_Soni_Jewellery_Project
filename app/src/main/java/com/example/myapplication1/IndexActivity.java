@@ -44,7 +44,7 @@ public class IndexActivity extends AppCompatActivity {
 TextView tvBillNo;
     Button btnSaveCustomer;
     DatabaseHelper dbHelper;
-    String billNo;
+    int billNo;
     Spinner spinnerMetal;
 
 
@@ -262,11 +262,9 @@ TextView tvBillNo;
         // ================= DELETE BUTTON =================
         Button deleteBtn = new Button(this);
         deleteBtn.setText("X");
-        deleteBtn.setOnClickListener(v -> {
-            tableLayout.removeView(row);
-            updateTotalAmount();
-            calculatePending();
-        });
+        deleteBtn.setOnClickListener(v -> tableLayout.removeView(row));
+        row.addView(deleteBtn);
+        updateTotalAmount();
 
 
         // ================= TEXTWATCHER FOR CALCULATION =================
@@ -282,8 +280,7 @@ TextView tvBillNo;
 
                 etValue.setText(String.format(Locale.getDefault(), "%.2f", value));
                 etAmount.setText(String.format(Locale.getDefault(), "%.2f", amount));
-                updateTotalAmount();
-                calculatePending();
+
 
             }
             @Override public void afterTextChanged(Editable s) {}
@@ -364,7 +361,7 @@ TextView tvBillNo;
     private void saveCustomer() {
 
 
-         billNo = tvBillNo.getText().toString().trim();
+       //  billNo = tvBillNo.getText().toString().trim();
         String name = etCustomerName.getText().toString().trim();
         String mobile = etMobile.getText().toString().trim();
         String date = etDate.getText().toString().trim();
@@ -414,19 +411,28 @@ TextView tvBillNo;
             etMobile.setError("Enter valid mobile number");
             return;
         }
-         billNo = BillNumberGenerator.getNextBillNo(this);
+        String billNo = (BillNumberGenerator.getNextBillNo(this));
         tvBillNo.setText(billNo);
 
 
-        boolean inserted = dbHelper.insertCustomer(
-                name, mobile, date, address, description,type, weight,
-                rate,value, making,grandTotal,deposit,pendingAmount,billNo);
+        long customerId = dbHelper.insertCustomer(
+                name,
+                mobile,
+                date,
+                address,
+                description,
+                grandTotal,
+                deposit,
+                pendingAmount,
+                billNo
+        );
 
         Toast.makeText(this,
                 "Bill Number  = " + tvBillNo.getText().toString(),
                 Toast.LENGTH_SHORT).show();
 
-        if (inserted) {
+        if (customerId != -1) {
+            saveAllRows(customerId);
             Toast.makeText(this, "✅ Customer Data  Saved Successfully", Toast.LENGTH_SHORT).show();
             etCustomerName.setText("");
             etMobile.setText("");
@@ -434,12 +440,12 @@ TextView tvBillNo;
             etDescription.setText("");
            // etDeposit.setText("");
            // etPendingDeposit.setText("");
-            spinnerMetal.setSelection(0);
-            etWeight.setText("");
-            etRate.setText("");
-            etValue.setText("");
-            etMaking.setText("");
-            etAmount.setText("");
+          //  spinnerMetal.setSelection(0);
+            //etWeight.setText("");
+            //etRate.setText("");
+           // etValue.setText("");
+            //etMaking.setText("");
+            //etAmount.setText("");
             etDeposit.setText("");
             etPendingDeposit.setText("");
 
@@ -450,6 +456,64 @@ TextView tvBillNo;
 
 
     }
+
+    private void saveAllRows(long customerId) {
+
+        int rowCount = tableLayout.getChildCount();
+
+        for (int i = 0; i < rowCount; i++) {
+
+            View rowView = tableLayout.getChildAt(i);
+
+            if (!(rowView instanceof TableRow)) continue;
+
+            TableRow row = (TableRow) rowView;
+
+            // Minimum 6 children hone chahiye
+            if (row.getChildCount() < 6) continue;
+
+            // Check correct types before casting
+            if (!(row.getChildAt(0) instanceof Spinner)) continue;
+            if (!(row.getChildAt(1) instanceof LinearLayout)) continue;
+            if (!(row.getChildAt(2) instanceof EditText)) continue;
+            if (!(row.getChildAt(3) instanceof EditText)) continue;
+            if (!(row.getChildAt(4) instanceof EditText)) continue;
+            if (!(row.getChildAt(5) instanceof EditText)) continue;
+
+            Spinner spinnerType = (Spinner) row.getChildAt(0);
+
+            LinearLayout weightLayout = (LinearLayout) row.getChildAt(1);
+            if (weightLayout.getChildCount() == 0) continue;
+
+            EditText etWeight = (EditText) weightLayout.getChildAt(0);
+            EditText etRate = (EditText) row.getChildAt(2);
+            EditText etValue = (EditText) row.getChildAt(3);
+            EditText etMaking = (EditText) row.getChildAt(4);
+            EditText etAmount = (EditText) row.getChildAt(5);
+
+            String type = spinnerType.getSelectedItem().toString();
+
+            double weight = getDouble(etWeight);
+            double rate = getDouble(etRate);
+            double value = getDouble(etValue);
+            double making = getDouble(etMaking);
+            double amount = getDouble(etAmount);
+
+            if (weight == 0 && rate == 0 && making == 0)
+                continue;
+
+            dbHelper.insertBillItem(
+                    customerId,
+                    type,
+                    weight,
+                    rate,
+                    value,
+                    making,
+                    amount
+            );
+        }
+    }
+
 
     private void updateTotalAmount() {
         double total = 0;
