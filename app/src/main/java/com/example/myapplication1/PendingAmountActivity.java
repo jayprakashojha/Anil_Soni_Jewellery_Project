@@ -48,11 +48,11 @@ public class PendingAmountActivity extends AppCompatActivity {
         header.addView(makeHeaderText("Address"));
         header.addView(makeHeaderText("Description"));
 
-        header.addView(makeHeaderText("Type"));
-        header.addView(makeHeaderText("Weight"));
-        header.addView(makeHeaderText("Rate"));
-        header.addView(makeHeaderText("Value"));
-        header.addView(makeHeaderText("Making %"));
+      //  header.addView(makeHeaderText("Type"));
+        //header.addView(makeHeaderText("Weight"));
+        //header.addView(makeHeaderText("Rate"));
+       // header.addView(makeHeaderText("Value"));
+        //header.addView(makeHeaderText("Making %"));
         header.addView(makeHeaderText("Amount"));
         header.addView(makeHeaderText("Deposit"));
         header.addView(makeHeaderText("Pending Amount"));
@@ -95,11 +95,11 @@ public class PendingAmountActivity extends AppCompatActivity {
             row.addView(makeRowText(date));
             row.addView(makeRowText(address));
             row. addView(makeRowText(description));
-            row.addView(makeRowText(Type));
-            row.addView(makeRowText(String.valueOf(weight)));
-            row.addView(makeRowText(String.valueOf(rate)));
-            row.addView(makeRowText(String.valueOf(value)));
-            row.addView(makeRowText(String.valueOf(making)));
+           // row.addView(makeRowText(Type));
+           // row.addView(makeRowText(String.valueOf(weight)));
+           // row.addView(makeRowText(String.valueOf(rate)));
+            //row.addView(makeRowText(String.valueOf(value)));
+            //row.addView(makeRowText(String.valueOf(making)));
             row.addView(makeRowText(String.valueOf(amount)));
             row.addView(makeRowText(String.valueOf(deposit)));
             row.addView(makeRowText(String.valueOf(pendingAmount)));
