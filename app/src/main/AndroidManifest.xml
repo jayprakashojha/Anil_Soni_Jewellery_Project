@@ -18,12 +18,13 @@
         android:theme="@style/Theme.MyApplication1"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".BillDetailActivity"
+            android:name=".activity_deposit"
             android:exported="false" />
 
 
-
-
+        <activity
+            android:name=".BillDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".DepositAmountActivity"
             android:exported="false" />
@@ -42,6 +43,8 @@
         <activity
             android:name=".customer_pending_amount"
             android:exported="false" />
+
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

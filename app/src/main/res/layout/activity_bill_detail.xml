@@ -47,6 +47,23 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+
+
+        <TextView
+            android:id="@+id/txtDeposit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#388E3C"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/txtTotalDeposit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#388E3C"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <TextView android:id="@+id/textPendingAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

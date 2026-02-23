@@ -17,6 +17,8 @@ public class DepositAmountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deposit_amount);
 
+
+
         int billId = getIntent().getIntExtra("bill_id", -1);
 
         if (billId == -1) {

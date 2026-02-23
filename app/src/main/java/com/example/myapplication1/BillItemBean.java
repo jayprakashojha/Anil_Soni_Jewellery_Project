@@ -48,4 +48,26 @@ public class BillItemBean {
     public double getMaking() { return making; }
 
     public double getAmount() { return amount; }
+
+    private String date;
+    public String getDate() {
+        return date;
+    }
+
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public BillItemBean(long id, long customerId, String type, double weight, double rate, double value, double making, double amount, String date) {
+        this.id = id;
+        this.customerId = customerId;
+        this.type = type;
+        this.weight = weight;
+        this.rate = rate;
+        this.value = value;
+        this.making = making;
+        this.amount = amount;
+        this.date = date; // 🔹 Yeh assign hona zaroori hai
+    }
 }

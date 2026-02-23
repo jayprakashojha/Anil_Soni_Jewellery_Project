@@ -12,6 +12,16 @@ public class Bean {
     double totalDeposit;
     double pendingAmount;
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    String date;
+
     public Bean() {
     }
     public Bean(int id,
@@ -33,6 +43,7 @@ public class Bean {
         this.finalAmount = finalAmount;
         this.totalDeposit = totalDeposit;
         this.pendingAmount = pendingAmount;
+        this.date = date;
     }
     public int getId() {
         return id;

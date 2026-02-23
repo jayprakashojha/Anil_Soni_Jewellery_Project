@@ -309,7 +309,7 @@ public class IndexActivity extends AppCompatActivity {
         etDate.setText(currentDate);
     }
 
-
+String date1;
     private void saveCustomer() {
 
 
@@ -319,7 +319,7 @@ public class IndexActivity extends AppCompatActivity {
         String date = etDate.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
         String description = etDescription.getText().toString().trim();
-
+    date1=date;
 
 
         double deposit = getDouble(etDeposit);
@@ -416,7 +416,8 @@ public class IndexActivity extends AppCompatActivity {
             double rate = getDouble(etRate);
             double value = getDouble(etValue);
             double making = getDouble(etMaking);
-            double amount = getDouble(etAmount);
+            double amount = getDouble(etDeposit);
+
 
             if (weight == 0 && rate == 0 && making == 0)
                 continue;
@@ -428,7 +429,9 @@ public class IndexActivity extends AppCompatActivity {
                     rate,
                     value,
                     making,
-                    amount
+                    0,
+                    date1
+
             );
         }
     }

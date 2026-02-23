@@ -1,5 +1,8 @@
 package com.example.myapplication1;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -91,6 +95,35 @@ public class PendingAmountActivity extends AppCompatActivity {
             row.addView(makeRowText(String.valueOf(amount)));
             row.addView(makeRowText(String.valueOf(deposit)));
             row.addView(makeRowText(String.valueOf(pendingAmount)));
+
+
+            TextView tvName = new TextView(this);
+           // tvName.setText(c.getName());
+
+            TextView tvPending = new TextView(this);
+           // tvPending.setText(String.valueOf(c.getPendingAmount()));
+
+            Button btnDeposit = new Button(this);
+            btnDeposit.setText("Add Rs. ");
+            btnDeposit.setPadding(30, 5, 30, 5);
+            GradientDrawable drawable = new GradientDrawable();
+
+            drawable.setColor(Color.parseColor("#0D47A1"));
+            btnDeposit.setTextColor(Color.WHITE);
+            drawable.setCornerRadius(70);
+
+            btnDeposit.setBackground(drawable);
+            btnDeposit.setOnClickListener(v -> {
+                Intent intent = new Intent(PendingAmountActivity.this, DepositAmountActivity.class);
+               // intent.putExtra("customer_id", c.getId());
+                intent.putExtra("customer_id", id);
+
+                startActivity(intent);
+            });
+
+            row.addView(tvName);
+            row.addView(tvPending);
+            row.addView(btnDeposit);
 
             tableCustomers.addView(row);
         }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "jewellery20.db";
+    private static final String DB_NAME = "jewellery22.db";
     private static final int DB_VERSION = 6;
 
     public static final String TABLE_CUSTOMER = "customers";
@@ -72,13 +72,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "value REAL, " +
                 "making REAL, " +
                 "amount REAL, " +
+                "date TEXT, " +  // 🔹 Add date column here
                 "FOREIGN KEY(customer_id) REFERENCES " + TABLE_CUSTOMER +
                 "(" + COL_ID + ") ON DELETE CASCADE" +
                 ")";
-
         db.execSQL(createItemsTable);
 
+
+
     }
+
+
     @Override
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
@@ -122,7 +126,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                   double rate,
                                   double value,
                                   double making,
-                                  double amount) {
+                                  double amount,
+                                  String date) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -134,12 +139,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put("value", value);
         cv.put("making", making);
         cv.put("amount", amount);
+        cv.put("date",date);
 
         long result = db.insert("bill_items", null, cv);
 
         return result != -1;
     }
 
+    public long insertPaymentNew(int customerId, double amount, String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("customer_id", customerId);
+        values.put("amount", amount);
+        values.put("date", date);
+
+
+        long billNo = db.insert("bill_items", null, values);
+
+        db.close();
+        return billNo;
+    }
 
     public Cursor getAllCustomers() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -316,7 +336,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndexOrThrow("rate")),
                         cursor.getDouble(cursor.getColumnIndexOrThrow("value")),
                         cursor.getDouble(cursor.getColumnIndexOrThrow("making")),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow("amount"))
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("amount")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("date"))
                 );
 
                 itemList.add(item);
@@ -364,5 +385,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return new FullBill(customer, items);
     }
+
+    public void updatePendingAmount(String billNo, double newPendingAmount) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+
+        values.put("pendingAmount", newPendingAmount);
+
+        // Bill number ke basis par update karein
+        db.update("customers", values, "billNo = ?", new String[]{billNo});
+        db.close();
+    }
+
 
 }
